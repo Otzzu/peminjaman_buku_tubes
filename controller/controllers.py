@@ -30,8 +30,8 @@ def calcExpiredDate(book_borrow):
     expired_date = datetime.strptime(book_borrow[4], "%d-%m-%Y; %H:%M:%S")
         
     delta = expired_date - datetime_now
-    if delta.days > 0: str_datetime = f"tersisa {delta.days} hari"
-    else: str_datetime =f"tersisa {int(delta.total_seconds()/3600)} jam"
+    if delta.days == 0 and delta.total_seconds() < 43200: str_datetime =f"tersisa {int(delta.total_seconds()/3600) + 1} jam"
+    elif delta.days >= 0: str_datetime = f"tersisa {int(delta.total_seconds()/(60*60*24)) + 1} hari"
     return str_datetime
     
     
@@ -103,6 +103,11 @@ def searchButton(query):
     
     view.updateMainFrame(books)
     
+def logout():
+    answer = messagebox.askyesno(message="Apakah anda yakin mau logout?")
+    if answer:
+        view.loginRegisterPage(False,True)
+    
 def button(type, book):
     # print(type)
     if type == "Borrow":
@@ -110,6 +115,9 @@ def button(type, book):
         # print(answer)
         if answer:
             borrowButton(book)
+            if book[6] == "pendidikan": waktu = "7"
+            else: waktu = "3"
+            messagebox.showinfo(message=f"Waktu peminjaman adalah {waktu} hari")
     elif type == "Queue":
         answer = messagebox.askyesno(message="Apakah anda yakin akan mengantri buku ini?")
         if answer:
@@ -118,6 +126,8 @@ def button(type, book):
         answer = messagebox.askyesno(message="Apakah anda yakin akan membatalkan antrian?")
         if answer:
             cancelOueueButton(book)
+    elif type == "Read":
+        view.openReadFrame(book)
         
 def borrow(book):
     book[3] -= 1
@@ -238,6 +248,19 @@ def createUser(NIM, password, cpassword):
     
     messagebox.showinfo(message="Pendaftaran berhasil")
     view.loginRegisterPage(False)
+    
+def deleteComment(pathname, book):
+    parent = view.app.nametowidget(pathname)
+    
+    comment = []
+    for widget in parent.winfo_children():
+        comment.append(widget.cget("text"))
+    comment.pop(-1)
+    comment.insert(1, book[0])
+    
+    model.comments.remove(comment)
+    
+    openBookFrame(book[1])
     
 
 

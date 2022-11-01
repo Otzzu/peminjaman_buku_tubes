@@ -1,13 +1,9 @@
-from cgitb import text
-import collections
-from distutils.cmd import Command
-from os import system
-import queue
 from tkinter import *
 from tkinter import ttk
+
+from pip import main
 import model.models as model
 import controller.controllers as con
-
 
 app = Tk()
 
@@ -57,7 +53,7 @@ def registerFrame():
     cpass_entry = Entry(register_frame, show="*")
     register_button = Button(register_frame, text="Register", command=lambda: con.createUser(nim_entry.get(), pass_entry.get(), cpass_entry.get()))
     exit_button = Button(register_frame, text="Exit", command=app.quit)
-    signin_label = Label(register_frame, text="Sign up", fg="blue", font=("Times 10 underline"))
+    signin_label = Label(register_frame, text="Sign in", fg="blue", font=("Times 10 underline"))
     
     signin_label.bind("<Button-1>", lambda e: loginRegisterPage(False))
     signin_label.bind("<Enter>", lambda e: e.widget.config(font=("Times 11 underline bold")))
@@ -82,16 +78,21 @@ def headerFrame():
     search_button = Button(header_frame, text="Search", command=lambda: con.searchButton(search_entry.get()))
     bookshelf_label = Label(header_frame, text="Bookshelf", font=("Times 15 bold"), fg="white", bg="blue")
     collection_label = Label(header_frame, text="Collections", font=("Times 15 bold"), fg="white", bg="blue")
+    logout_label = Label(header_frame, text="Logout", font=("Times 15 bold"), fg="white", bg="blue")
     
     collection_label.bind("<Button-1>", lambda e: updateMainFrame(model.books))
     bookshelf_label.bind("<Button-1>", lambda e:con.bookShelf())
+    logout_label.bind("<Button-1>", lambda e:con.logout())
     collection_label.bind("<Enter>", lambda e: e.widget.config(font=("Times 15 underline bold")))
     collection_label.bind("<Leave>", lambda e: e.widget.config(font=("Times 15 bold")))
     bookshelf_label.bind("<Enter>", lambda e: e.widget.config(font=("Times 15 underline bold")))
     bookshelf_label.bind("<Leave>", lambda e: e.widget.config(font=("Times 15 bold")))
+    logout_label.bind("<Enter>", lambda e: e.widget.config(font=("Times 15 underline bold")))
+    logout_label.bind("<Leave>", lambda e: e.widget.config(font=("Times 15 bold")))
     
     bookshelf_label.grid(column=3,row=0)
     collection_label.grid(column=2, row=0)
+    logout_label.grid(column=4, row=0)
     search_entry.grid(column=0, row=0)
     search_button.grid(column=1, row=0)
     
@@ -104,7 +105,7 @@ def updateMainFrame(books, isBookshelf = False, current = 0):
     main_frame.pack(expand=YES, fill=BOTH)
     
 def mainFrame(books, isBookshelf = False, current = 0):
-    global main_frame, book_category
+    global main_frame, book_category, scrollbar
     main_frame = Frame(app)
     canvas = Canvas(main_frame)
     scrollbar = ttk.Scrollbar(app, orient="vertical", command=canvas.yview)
@@ -171,12 +172,12 @@ def bookView(book, comments, isBooked=False, isQueued = False, str_datetime = ""
     book_frame.pack(side=LEFT, fill=Y, expand=NO)
 
 def updateBookView(book, isBooked = False, isQueued = False, str_datetime = "", sinopsis =""):
-    if book[3] == 0 and not isQueued:button_var.set("Queue") 
-    elif isBooked: 
+    if isBooked: 
         button_var.set("Read")
         return_button.pack(fill=X,side=BOTTOM)
         expired_date_label.pack(fill=X,side=BOTTOM)
     elif isQueued: button_var.set("Cancel Queue")
+    elif book[3] == 0 and not isQueued:button_var.set("Queue") 
     else: 
         button_var.set("Borrow")
         return_button.pack_forget()
@@ -189,7 +190,7 @@ def updateBookView(book, isBooked = False, isQueued = False, str_datetime = "", 
     copy_var.set(f"{book[3]} COPY")
     
 def bookFrame(book, comments):
-    global return_button, book_frame, button_var, readers_var, queue_var, copy_var, borrow_button, left_container, date_var, expired_date_label, sinopsis_text, comment2_container, comment_container
+    global return_button, book_frame, button_var, readers_var, queue_var, copy_var, borrow_button, left_container, date_var, expired_date_label, sinopsis_text, comment2_container, comment_container, right_container
     book_frame = Frame(app)
     
     left_container = Frame(book_frame, borderwidth=2, relief="solid")
@@ -206,7 +207,7 @@ def bookFrame(book, comments):
     copy_label = Label(left_container, text="Copy Number", font=("Helvetica 8"), fg="gray")
     back_label = Label(left_container, text="<", font=("Times 20 bold"), fg="gray")
     back_label.bind("<Button-1>", lambda e: updateMainFrame(model.books))
-    back_label.bind("<Enter>", lambda e: e.widget.config(fg="white"))
+    back_label.bind("<Enter>", lambda e: e.widget.config(fg="black"))
     back_label.bind("<Leave>", lambda e: e.widget.config(fg="gray"))
     
     copy_var = StringVar()
@@ -258,23 +259,29 @@ def bookFrame(book, comments):
     comment_button = Button(entry_container, text=">", font="Helvatica 12 bold", command=lambda: con.createComment(book, comment_entry.get()))
     comment_label = Label(right_container, text="Comment", font=("Times 15 bold"))
     canvas = Canvas(comment_container)
-    canvas.pack(side=LEFT)
+    canvas.pack(side=LEFT, expand=YES, fill=BOTH)
     scrollbar = ttk.Scrollbar(comment_container, orient="vertical", command=canvas.yview)
     scrollbar.pack(side=RIGHT, fill=Y)
     comment2_container = Frame(canvas)
     
     canvas.configure(yscrollcommand=scrollbar.set)
     canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-    canvas.create_window((0,0), window=comment2_container, anchor="nw")
+    canvas.create_window((0,0), window=comment2_container, anchor="nw", width=600)
     
     for comment in comments:
         comment_frame = Frame(comment2_container)
-        user_label = Label(comment_frame, text=comment[0], font="Times 10 underline bold")
-        comment2_label = Label(comment_frame, text=comment[2])
-        user_label.pack(fill=X)
-        comment2_label.pack(fill=X)
+        user_label = Label(comment_frame, text=comment[0], font="Times 10 underline bold", anchor="w")
+        comment2_label = Label(comment_frame, text=comment[2], anchor="w")
+        user_label.pack(anchor="w")
+        delete_label = Label(comment_frame, text="delete", fg="gray", font="Times 9", anchor="e")
+    
+        if comment[0] == con.user[0]: delete_label.pack(side=RIGHT, anchor="ne")
+        delete_label.bind("<Button-1>", lambda e: con.deleteComment(e.widget.winfo_parent(), book))
+        delete_label.bind("<Enter>", lambda e: e.widget.config(fg="black"))
+        delete_label.bind("<Leave>", lambda e: e.widget.config(fg="gray"))
+        comment2_label.pack(anchor="w")
         
-        comment_frame.pack()
+        comment_frame.pack(anchor="w", fill=X)
         ttk.Separator(comment2_container, orient='horizontal').pack(fill=X)
         
     back_label.pack(fill=X, anchor=W)
@@ -324,15 +331,40 @@ def init():
     header_frame.pack(side=TOP, expand=NO, fill=X, ipady=40)
     main_frame.pack(expand=YES, fill=BOTH)
     
-def loginRegisterPage(isLogin):
+def loginRegisterPage(isLogin, isLogout=False):
     if isLogin:
         login_frame.destroy()
         registerFrame()
         register_frame.pack(expand=YES)
-    else:
+    elif not isLogin and not isLogout:
         register_frame.destroy()
         loginFrame()
         login_frame.pack(expand=YES)
+    elif isLogout:
+        for widget in app.winfo_children():
+            widget.destroy()
+        loginFrame()
+        login_frame.pack(expand=YES)
+            
     
+def openReadFrame(book):
+    for widget in right_container.winfo_children():
+        widget.destroy()
+    
+    readFrame(book)
+    read_frame.pack(fill=BOTH, expand=YES)
+ 
+def readFrame(book):
+    global read_frame
+    read_frame = Frame(right_container)
+    back_label = Label(read_frame, text="<", font="Times 14", anchor="w")
+    read_label = Label(read_frame)
+    
+    back_label.bind("<Button-1>", lambda e: con.openBookFrame(book[1]))
+    back_label.bind("<Enter>", lambda e: e.widget.config(fg="black"))
+    back_label.bind("<Leave>", lambda e: e.widget.config(fg="gray"))
+    
+    back_label.pack(fill=X, anchor="w", side=TOP, expand=NO)
+    read_label.pack(fill=BOTH, expand=YES)
     
    
