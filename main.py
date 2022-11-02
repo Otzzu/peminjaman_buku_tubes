@@ -5,7 +5,6 @@ import model.models as m
 # v.init()
 m.loadBooks()
 m.loadBorrows()
-print(m.book_borrowed)
 m.loadComments()
 m.loadSinopsis()
 m.loadUsers()

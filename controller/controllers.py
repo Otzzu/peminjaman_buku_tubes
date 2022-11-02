@@ -109,10 +109,10 @@ def logout():
         view.loginRegisterPage(False,True)
     
 def button(type, book):
-    # print(type)
+
     if type == "Borrow":
         answer = messagebox.askyesno(message="Apakah anda yakin akan meminjam buku ini?")
-        # print(answer)
+    
         if answer:
             borrowButton(book)
             if book[6] == "pendidikan": waktu = "7"
@@ -151,7 +151,6 @@ def borrow(book):
 def borrowButton(book):
     book_new = borrow(book)
     str_datetime = calcExpiredDate(book_new)
-    # print(model.book_borrowed)
     sinopsis = list(filter(lambda x: x[0] == book[0], model.book_sinopsis))
     if len(sinopsis) == 0: sinopsis.append("")
     
@@ -209,18 +208,11 @@ def returnBook(book):
     book[8] -= 1
     book[3] += 1
     
-    print(model.book_borrowed[2][1])
-    print(book[0])
-    print(model.book_borrowed[2][0])
-    print(user[0])
-    print(model.book_borrowed[2][2])
-    
     [book2] = list(filter(lambda x: x[1] == book[0] and x[0] == user[0] and x[2] == "", model.book_borrowed))
     # index = model.book_borrowed.index(book2)
     
     
     model.book_borrowed.remove(book2)
-    print(model.book_borrowed)
     
 def cancelQueue(book):
     book[9] -= 1

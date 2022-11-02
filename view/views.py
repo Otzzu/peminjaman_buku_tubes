@@ -324,7 +324,7 @@ def bookFrame(book, comments):
 def firstRun():
     loginFrame()
     login_frame.pack(expand=YES)
-    app.geometry("830x750")
+    app.geometry("830x780")
     app.resizable(False, False)
     app.mainloop()
 
@@ -355,20 +355,54 @@ def openReadFrame(book):
     for widget in right_container.winfo_children():
         widget.destroy()
     
+    right_container.pack_forget()
     readFrame(book)
-    read_frame.pack(fill=BOTH, expand=YES)
+    scrollbar2.pack(side=RIGHT, fill=Y)
+    back_label2.pack(side=TOP)
+    canvas2.pack(expand=YES)
+    
+    right_container.pack(fill=BOTH, expand=YES)
  
 def readFrame(book):
-    global read_frame
-    read_frame = Frame(right_container)
-    back_label = Label(read_frame, text="<", font="Times 14", anchor="w")
-    read_label = Label(read_frame)
+    global back_label2, canvas2, scrollbar2
+    back_label2 = Label(right_container, text="<", font="Times 14", fg="gray", width=600)
+    back_label2.pack_propagate(False)
+    # 
+    canvas2 = Canvas(right_container, width=600, height=700)
+    # canvas2.pack_propagate(False)
+    scrollbar2 = ttk.Scrollbar(right_container, orient="vertical", command=canvas2.yview)
     
-    back_label.bind("<Button-1>", lambda e: con.openBookFrame(book[1]))
-    back_label.bind("<Enter>", lambda e: e.widget.config(fg="black"))
-    back_label.bind("<Leave>", lambda e: e.widget.config(fg="gray"))
+    container2 = Frame(canvas2)
+    canvas2.configure(yscrollcommand=scrollbar2.set)
+    canvas2.bind("<Configure>", lambda e: canvas2.configure(scrollregion=canvas2.bbox("all")))
+    canvas2.create_window((0,0), window=container2, anchor="nw")
     
-    back_label.pack(fill=X, anchor="w", side=TOP, expand=NO)
-    read_label.pack(fill=BOTH, expand=YES)
+    bg1 = PhotoImage(file="asset/page2.png")
+    bg2 = PhotoImage(file="asset/page1.png")
+    bg3 = PhotoImage(file="asset/page3.png")
+    bg4 = PhotoImage(file="asset/page4.png")
+    read_label1 = Label(container2, image=bg1)
+    read_label2 = Label(container2, image=bg2)
+    read_label3 = Label(container2, image=bg3)
+    read_label4 = Label(container2, image=bg4)
+    read_label1.image = bg1
+    read_label2.image = bg2
+    read_label3.image = bg3
+    read_label4.image = bg4
+    
+    
+    read_label1.pack(fill=X, expand=YES)
+    read_label2.pack(fill=X, expand=YES)
+    read_label3.pack(fill=X, expand=YES)
+    read_label4.pack(fill=X, expand=YES)
+    
+    # for i in range(10):
+    #     Button(container2, text="Tobol").pack(fill=BOTH, expand=YES)
+    
+    back_label2.bind("<Button-1>", lambda e: con.openBookFrame(book[1]))
+    back_label2.bind("<Enter>", lambda e: e.widget.config(fg="black"))
+    back_label2.bind("<Leave>", lambda e: e.widget.config(fg="gray"))
+    
+    
     
    
