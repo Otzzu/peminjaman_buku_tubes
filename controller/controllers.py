@@ -235,6 +235,8 @@ def cancelOueueButton(book):
 def createUser(NIM, password, cpassword):
     if password != cpassword:
         messagebox.showinfo(message="password dan confirm password harus sama")
+        view.pass_entry.delete(0, END)
+        view.cpass_entry.delete(0, END)
         return
     
     NIMs = list(map(lambda x: x[0], model.users))

@@ -37,7 +37,7 @@ def loginFrame():
     signup_label.grid(column=0, row=3, columnspan=3)
     
 def registerFrame():
-    global register_frame
+    global register_frame, pass_entry, cpass_entry
     register_frame = Frame(app)
     
     register_frame.columnconfigure(0, weight=1)
@@ -72,9 +72,13 @@ def registerFrame():
 
 def headerFrame():
     global header_frame
-    header_frame = Frame(app, background="blue")
+    header_frame = Frame(app, background="blue", pady=20, padx=15)
     
-    search_entry = Entry(header_frame)
+    header_frame.columnconfigure(2, weight=1)
+    header_frame.columnconfigure(3, weight=1)
+    header_frame.columnconfigure(4, weight=1)
+    
+    search_entry = Entry(header_frame, width=30)
     search_button = Button(header_frame, text="Search", command=lambda: con.searchButton(search_entry.get()))
     bookshelf_label = Label(header_frame, text="Bookshelf", font=("Times 15 bold"), fg="white", bg="blue")
     collection_label = Label(header_frame, text="Collections", font=("Times 15 bold"), fg="white", bg="blue")
@@ -151,8 +155,8 @@ def mainFrame(books, isBookshelf = False, current = 0):
             title_label.bind("<Enter>", lambda e: e.widget.config(font=("Helvetica 12 underline")))
             title_label.bind("<Leave>", lambda e: e.widget.config(font=("Helvetica 12")))
             
-            author_label.bind("<Enter>", lambda e: e.widget.config(font=("Helvetica 10 underline")))
-            author_label.bind("<Leave>", lambda e: e.widget.config(font=("Helvetica 10")))
+            # author_label.bind("<Enter>", lambda e: e.widget.config(font=("Helvetica 10 underline")))
+            # author_label.bind("<Leave>", lambda e: e.widget.config(font=("Helvetica 10")))
             
             title_label.bind("<Button-1>", lambda e: con.openBookFrame(e.widget.cget("text")))
             author_label.bind("<Button-1>", lambda e: print(e.x_root, e.y_root))
