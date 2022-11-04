@@ -254,7 +254,7 @@ def bookFrame(book, comments):
     sinopsis_container = Frame(right_container, height=400)
     sinopsis_container.pack_propagate(False)
     sinopsis_text = Text(sinopsis_container, font="Times 12")
-    sinopsis_label = Label(sinopsis_container, text="Sinopsis", font=("Times 15 bold"))
+    sinopsis_label = Label(sinopsis_container, text="Sinopsis/Keterangan", font=("Times 15 bold"))
     
     comment_container = Frame(right_container, height=150)
     comment_container.pack_propagate(False)
@@ -324,7 +324,7 @@ def bookFrame(book, comments):
 def firstRun():
     loginFrame()
     login_frame.pack(expand=YES)
-    app.geometry("830x780")
+    app.geometry("850x780")
     app.resizable(False, False)
     app.mainloop()
 

@@ -62,7 +62,7 @@ def checkQueue():
              
     
 def search(query, books):
-    books2 = list(filter(lambda x: query in x[1] or query in x[2] or query in x[5] or query in x[6], books))
+    books2 = list(filter(lambda x: query in x[1].lower() or query in x[2].lower() or query in x[5].lower() or query in x[6].lower(), books))
     return books2
 
 def filterByCategory(query, books):
