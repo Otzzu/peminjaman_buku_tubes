@@ -1,3 +1,4 @@
+# untuk menjalankan program run file main.py
 from tkinter import *
 from tkinter import ttk
 import model.models as model

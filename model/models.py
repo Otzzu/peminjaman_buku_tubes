@@ -1,3 +1,5 @@
+# untuk menjalankan program run file main.py
+
 # Gambaran data dalam bentuk matrix setelah diambil dari file
 
 # books = [[
