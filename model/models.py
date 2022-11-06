@@ -1,3 +1,5 @@
+# Gambaran data dalam bentuk matrix setelah diambil dari file
+
 # books = [[
 #     "1", "phiwiki", "budi", 1, "phiwiki.png", "erlangga", "pendidikan", "2004", 0, 1
 # ],[
@@ -43,16 +45,21 @@
 #     ["19622194", "1", "Sangat bagus sekali"]
 # ]
 
-books = []
 
-users = []
+# data-data yang diperlukan program
+books = [] #data buku, penjelasan data apa saja yang ada di satu buku: [id buku, judul buku, penulis, jumlah buku, file foto sampul buku, penerbit, tipe buku/genre/kategori, tahun terbit, jumlah pembaca, jumlah yang sedang mengantri]
 
-book_borrowed = []
+users = [] #data user yang terdaftar, penjelasan data apa saja pada satu user: [NIM, password]
 
-book_sinopsis = []
+book_borrowed = [] #data buku apa aja yang lagi dipinjam atau sedang mengantri, penjelasan data: [NIM peminjam/pengantri, id buku yang sedang dipinjam atau id buku yang sedang mengantri, penjelasan buku dipinjam atau mengantri, tanggal peminjaman, tanggal habis masa peminjaman]
 
-comments = []
+book_sinopsis = [] #data sinopsis atau keterangan buku, penjelasan data: [id buku,  sinopsis atau keterangan buku]
 
+comments = []#data komentar atau ulasan, penjelasan data: [NIM pemberi komentar, id buku dimana komentar diberikan, isi komentar]
+
+# penyimpanan ke sebuah file dilakukan agar data bersifat kekal tidak sementara
+
+# kumpulan fungsi untuk mengambil data dari file lalu diubah dalam bentuk matrix
 def loadUsers():
     file = open("data/users.data", "r")
     
@@ -106,14 +113,13 @@ def loadBooks():
     print("test")
     file.close()
     
-       
+ 
+# kumpulan fungsi untuk menyimpan data matrix ke sebuah file  
 def saveUsers():
     file = open("data/users.data", "w")
     
     users2 = list(map(lambda x: ",".join(x), users))
     str = "\n".join(users2)
-    # for user in users:
-    #     file.writelines(",".join(user))
     file.writelines(str)
     file.close()
     
@@ -123,15 +129,11 @@ def saveComments():
     comments2 = list(map(lambda x: ",".join(x), comments))
     str = "\n".join(comments2)
     file.writelines(str) 
-    # for comment in comments:
-    #     file.writelines(",".join(comment))
     file.close()
     
 def saveBorrows():
     file = open("data/borrows.data", "w")
     
-    # for borrow in book_borrowed:
-    #     file.writelines(",".join(borrow))
     borrows = list(map(lambda x: ",".join(x), book_borrowed))
     str = "\n".join(borrows)
     file.writelines(str) 
@@ -145,7 +147,6 @@ def saveBooks():
         book[3] = str(book[3])
         book[8] = str(book[8])
         book[9] = str(book[9])
-        # file.writelines(",".join(book))
         
     book2 = list(map(lambda x: ",".join(x), books))
     str2 = "\n".join(book2)

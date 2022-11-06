@@ -1,12 +1,11 @@
 from tkinter import *
 from tkinter import ttk
-
-from pip import main
 import model.models as model
 import controller.controllers as con
 
 app = Tk()
 
+# tampilan pada halaman login
 def loginFrame():
     global login_frame, nim_entry, pass_entry
     login_frame = Frame(app)
@@ -36,6 +35,7 @@ def loginFrame():
     login_button.grid(column=2, row=2)
     signup_label.grid(column=0, row=3, columnspan=3)
     
+# tampilan pada halaman register
 def registerFrame():
     global register_frame, pass_entry, cpass_entry
     register_frame = Frame(app)
@@ -69,7 +69,7 @@ def registerFrame():
     register_button.grid(column=2, row=3)
     signin_label.grid(column=0, row=4, columnspan=3)
     
-
+# tampilan header untuk setiap halaman setelah login
 def headerFrame():
     global header_frame
     header_frame = Frame(app, background="blue", pady=20, padx=15)
@@ -99,7 +99,8 @@ def headerFrame():
     logout_label.grid(column=4, row=0)
     search_entry.grid(column=0, row=0)
     search_button.grid(column=1, row=0)
-    
+   
+# update tampilan pada halaman utama (menu Collections) setelah terjadi sebuah aksi
 def updateMainFrame(books, isBookshelf = False, current = 0):
     for widget in app.winfo_children():
         if widget == header_frame: continue
@@ -108,20 +109,18 @@ def updateMainFrame(books, isBookshelf = False, current = 0):
     mainFrame(books, isBookshelf, current)
     main_frame.pack(expand=YES, fill=BOTH)
     
+# tampilan halaman utama (menu Collections)
 def mainFrame(books, isBookshelf = False, current = 0):
     global main_frame, book_category, scrollbar
     main_frame = Frame(app)
     canvas = Canvas(main_frame)
     scrollbar = ttk.Scrollbar(app, orient="vertical", command=canvas.yview)
     
-    # category = StringVar()
     values = []
     if isBookshelf: 
         values = ["borrow", "queue"]
-        # category.set("borrow")
     else: 
         values=["All", "pendidikan", "non-pendidikan"]
-        # category.set("All")
     book_category = ttk.Combobox(main_frame, values=values, width=800)
     book_category.current(current)
     book_category.bind("<<ComboboxSelected>>", lambda e: con.filterCombobox(e.widget.get()))
@@ -135,10 +134,8 @@ def mainFrame(books, isBookshelf = False, current = 0):
     book_category.pack(side=TOP, fill=Y)
     canvas.pack(expand=YES, fill=BOTH)
     scrollbar.pack(side=RIGHT, fill=Y)
-    # container.bind("<Motion>", lambda e: print(e))
     
     for i in range(5):
-        # container.rowconfigure(i, weight=1)
         for j in range(4):
             if i*4 + j >= len(books): break
             
@@ -155,9 +152,6 @@ def mainFrame(books, isBookshelf = False, current = 0):
             title_label.bind("<Enter>", lambda e: e.widget.config(font=("Helvetica 12 underline")))
             title_label.bind("<Leave>", lambda e: e.widget.config(font=("Helvetica 12")))
             
-            # author_label.bind("<Enter>", lambda e: e.widget.config(font=("Helvetica 10 underline")))
-            # author_label.bind("<Leave>", lambda e: e.widget.config(font=("Helvetica 10")))
-            
             title_label.bind("<Button-1>", lambda e: con.openBookFrame(e.widget.cget("text")))
             author_label.bind("<Button-1>", lambda e: print(e.x_root, e.y_root))
             
@@ -165,7 +159,8 @@ def mainFrame(books, isBookshelf = False, current = 0):
             title_label.pack()
             author_label.pack()
             book_label.image = bg
-            
+       
+# pengaturan tampilan halaman buku
 def bookView(book, comments, isBooked=False, isQueued = False, str_datetime = "", sinopsis =""):
     for widget in app.winfo_children():
         if widget == header_frame: continue
@@ -175,24 +170,7 @@ def bookView(book, comments, isBooked=False, isQueued = False, str_datetime = ""
     updateBookView(book, isBooked, isQueued, str_datetime, sinopsis)
     book_frame.pack(side=LEFT, fill=Y, expand=NO)
 
-def updateBookView(book, isBooked = False, isQueued = False, str_datetime = "", sinopsis =""):
-    if isBooked: 
-        button_var.set("Read")
-        return_button.pack(fill=X,side=BOTTOM)
-        expired_date_label.pack(fill=X,side=BOTTOM)
-    elif isQueued: button_var.set("Cancel Queue")
-    elif book[3] == 0 and not isQueued:button_var.set("Queue") 
-    else: 
-        button_var.set("Borrow")
-        return_button.pack_forget()
-        expired_date_label.pack_forget()
-    sinopsis_text.insert(END, sinopsis)
-    sinopsis_text.config(state=DISABLED)
-    date_var.set(str_datetime)
-    readers_var.set(book[8])
-    queue_var.set(book[9])
-    copy_var.set(f"{book[3]} COPY")
-    
+# tampilan halaman sebuah buku (tampilan yang muncul setelah judul buku diklik)
 def bookFrame(book, comments):
     global return_button, book_frame, button_var, readers_var, queue_var, copy_var, borrow_button, left_container, date_var, expired_date_label, sinopsis_text, comment2_container, comment_container, right_container
     book_frame = Frame(app)
@@ -321,20 +299,43 @@ def bookFrame(book, comments):
     left_container.pack(side=LEFT, fill=Y, expand=YES)    
     right_container.pack(side=RIGHT, expand=YES, padx=5)
     
+# update tampilan halaman buku setelah terjadi sebuah aksi
+def updateBookView(book, isBooked = False, isQueued = False, str_datetime = "", sinopsis =""):
+    if isBooked: 
+        button_var.set("Read")
+        return_button.pack(fill=X,side=BOTTOM)
+        expired_date_label.pack(fill=X,side=BOTTOM)
+    elif isQueued: button_var.set("Cancel Queue")
+    elif book[3] == 0 and not isQueued:button_var.set("Queue") 
+    else: 
+        button_var.set("Borrow")
+        return_button.pack_forget()
+        expired_date_label.pack_forget()
+    sinopsis_text.insert(END, sinopsis)
+    sinopsis_text.config(state=DISABLED)
+    date_var.set(str_datetime)
+    readers_var.set(book[8])
+    queue_var.set(book[9])
+    copy_var.set(f"{book[3]} COPY")
+    
+# hal yang dilakukan saat aplikasi pertama kali berjalan agar window dari programnya bisa dilihat
 def firstRun():
     loginFrame()
     login_frame.pack(expand=YES)
+    app.title("e-perpus")
     app.geometry("850x780")
     app.resizable(False, False)
     app.mainloop()
 
+# render aplikasi utama setelah berhasil login
 def init():
     login_frame.destroy()
     headerFrame()
     mainFrame(model.books)
     header_frame.pack(side=TOP, expand=NO, fill=X, ipady=40)
     main_frame.pack(expand=YES, fill=BOTH)
-    
+  
+#  fungsi untuk berpindah ke login page atau register page dari page lain
 def loginRegisterPage(isLogin, isLogout=False):
     if isLogin:
         login_frame.destroy()
@@ -350,7 +351,7 @@ def loginRegisterPage(isLogin, isLogout=False):
         loginFrame()
         login_frame.pack(expand=YES)
             
-    
+# pengaturan untuk tampilan setelah menekan tombol read
 def openReadFrame(book):
     for widget in right_container.winfo_children():
         widget.destroy()
@@ -363,13 +364,13 @@ def openReadFrame(book):
     
     right_container.pack(fill=BOTH, expand=YES)
  
+# tampilan membaca setelah menekan tombol read
 def readFrame(book):
     global back_label2, canvas2, scrollbar2
     back_label2 = Label(right_container, text="<", font="Times 14", fg="gray", width=600)
     back_label2.pack_propagate(False)
-    # 
+    
     canvas2 = Canvas(right_container, width=600, height=700)
-    # canvas2.pack_propagate(False)
     scrollbar2 = ttk.Scrollbar(right_container, orient="vertical", command=canvas2.yview)
     
     container2 = Frame(canvas2)
@@ -395,10 +396,7 @@ def readFrame(book):
     read_label2.pack(fill=X, expand=YES)
     read_label3.pack(fill=X, expand=YES)
     read_label4.pack(fill=X, expand=YES)
-    
-    # for i in range(10):
-    #     Button(container2, text="Tobol").pack(fill=BOTH, expand=YES)
-    
+        
     back_label2.bind("<Button-1>", lambda e: con.openBookFrame(book[1]))
     back_label2.bind("<Enter>", lambda e: e.widget.config(fg="black"))
     back_label2.bind("<Leave>", lambda e: e.widget.config(fg="gray"))
