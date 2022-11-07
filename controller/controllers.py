@@ -16,6 +16,7 @@ def openBookFrame(bookName):
     isBooked = next(filter(lambda x: book[0] == x[1] and user[0] == x[0] and x[2] == "", model.book_borrowed), None) is not None
     isQueued = next(filter(lambda x: book[0] == x[1] and user[0] == x[0] and x[2] == "queue", model.book_borrowed), None) is not None
     sinopsis = list(filter(lambda x: x[0] == book[0], model.book_sinopsis))
+    if len(sinopsis) == 0: sinopsis.append("")
     comments = list(filter(lambda x: x[1] == book[0], model.comments))
     str_datetime = ""
     
@@ -233,7 +234,7 @@ def returnBookButton(book):
     
     returnBook(book)
     
-    view.updateBookView(book)
+    openBookFrame(book[1])
 
 # fungsi prosedur pengembalian buku (pengolahan dan update data)
 def returnBook(book):
