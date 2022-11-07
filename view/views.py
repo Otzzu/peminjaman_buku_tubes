@@ -154,7 +154,6 @@ def mainFrame(books, isBookshelf = False, current = 0):
             title_label.bind("<Leave>", lambda e: e.widget.config(font=("Helvetica 12")))
             
             title_label.bind("<Button-1>", lambda e: con.openBookFrame(e.widget.cget("text")))
-            author_label.bind("<Button-1>", lambda e: print(e.x_root, e.y_root))
             
             book_label.pack()
             title_label.pack()

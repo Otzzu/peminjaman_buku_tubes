@@ -49,17 +49,20 @@
 
 
 # data-data yang diperlukan program
-books = [] #data buku, penjelasan data apa saja yang ada di satu buku: [id buku, judul buku, penulis, jumlah buku, file foto sampul buku, penerbit, tipe buku/genre/kategori, tahun terbit, jumlah pembaca, jumlah yang sedang mengantri]
+books = [] #data buku, penjelasan data: [id buku, judul buku, penulis, jumlah buku, file foto sampul buku, penerbit, tipe buku/genre/kategori, tahun terbit, jumlah pembaca, jumlah yang sedang mengantri]
 
-users = [] #data user yang terdaftar, penjelasan data apa saja pada satu user: [NIM, password]
+users = [] #data user yang terdaftar, penjelasan data: [NIM, password]
 
-book_borrowed = [] #data buku apa aja yang lagi dipinjam atau sedang mengantri, penjelasan data: [NIM peminjam/pengantri, id buku yang sedang dipinjam atau id buku yang sedang mengantri, penjelasan buku dipinjam atau mengantri, tanggal peminjaman, tanggal habis masa peminjaman]
+book_borrowed = [] #data buku apa aja yang lagi dipinjam atau sedang mengantri, penjelasan data: [NIM peminjam/pengantri, id buku yang sedang dipinjam atau id buku yang sedang mengantri, penjelasan buku dipinjam atau mengantri, tanggal dan waktu peminjaman, tanggal dan waktu habis masa peminjaman]
 
-book_sinopsis = [] #data sinopsis atau keterangan buku, penjelasan data: [id buku,  sinopsis atau keterangan buku]
+book_sinopsis = [] #data sinopsis atau keterangan buku, penjelasan data: [id buku, sinopsis atau keterangan buku]
 
 comments = []#data komentar atau ulasan, penjelasan data: [NIM pemberi komentar, id buku dimana komentar diberikan, isi komentar]
 
+
+
 # penyimpanan ke sebuah file dilakukan agar data bersifat kekal tidak sementara
+
 
 # kumpulan fungsi untuk mengambil data dari file lalu diubah dalam bentuk matrix
 def loadUsers():
@@ -112,7 +115,6 @@ def loadBooks():
         book[8] = int(book[8])
         book[9] = int(book[9])
         books.append(book)
-    print("test")
     file.close()
     
  
